@@ -1,0 +1,31 @@
+{
+  "name": "solar-position",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www --inspect"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "canvas": "^2.6.1",
+    "chart.js": "^2.9.3",
+    "chartjs-node-canvas": "^3.0.6",
+    "cheerio": "^1.0.0-rc.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-validator": "^6.6.1",
+    "http-errors": "~1.6.3",
+    "jsdom": "^16.4.0",
+    "moment-timezone": "^0.5.31",
+    "morgan": "~1.9.1",
+    "node-cache": "^5.1.0",
+    "prom-client": "^11.5.3",
+    "pug": "^2.0.4",
+    "t-a-i": "^1.0.15"
+  },
+  "devDependencies": {}
+}

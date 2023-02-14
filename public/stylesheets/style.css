@@ -1,0 +1,22 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#version {
+  text-align: right;
+}
+
+#defs {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+#defs li {
+  margin-bottom: 10px;
+}

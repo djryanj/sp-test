@@ -1,0 +1,140 @@
+extends layout
+block content
+  script. 
+    TablesawConfig = { 
+      getColumnToggleLabelTemplate: function( text ) { 
+        return "<label><input type='checkbox' checked><span>" + text + "</span></label>";} 
+      }
+    ;
+  h1 Solar Position Algorithm Calculator
+  |
+  h2 Results for Longitude #{results.longitude}, Latitude #{results.latitude} at #{results.elevation}m on #{results.year}-#{results.month}-#{results.day} GMT#{results.tz}
+  h3 Sunrise: #{results.sunrise_hr}
+  h3 Sunset: #{results.sunset_hr}
+  h3 Local Sun Transit Time (Solar Noon): #{results.suntransit_hr}
+  h3 Global Results &amp; Variables
+  ul
+    li delta_ut1: #{results.delta_ut1}s
+    li delta_t: #{results.delta_t}s
+    li suntransit (raw): #{results.suntransit}
+    li sunrise (raw): #{results.sunrise}
+    li sunset (raw): #{results.sunset}
+    li ssha: #{results.ssha}
+    li sta: #{results.sta}
+    li srha: #{results.srha}
+    li azm_rotation: #{results.azm_rotation} degrees
+    li slope: #{results.slope} degrees
+    li avg_pressure: #{results.avg_pressure} millibars
+    li avg_temperature: #{results.avg_temperature} &deg;C
+    li atmos_refract: #{results.atmos_refract}
+  h3 Intervals
+  div(class='tablesaw-overflow')
+    table(class="tablesaw tablesaw-row-zebra" data-tablesaw-mode-switch data-tablesaw-mode="swipe" data-tablesaw-mode-exclude="stack")#intervals
+      thead
+        tr
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist") Hour
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist") Minute
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="persist") Second
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") jd
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") jc
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") jde
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") jce
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") jme
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") l
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") b
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") r
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") theta
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") beta
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") x0
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") x1
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") x2
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") x3
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") x4
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="2") del_psi
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") del_epsilon
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") epsilon0
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") epsilon
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") del_tau
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") lamda
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") nu0
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") nu
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") alpha
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") delta
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") h
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") xi
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") del_alpha
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") delta_prime
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") alpha_prime
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") h_prime
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") e0
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") del_e
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") e
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") zenith
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") azimuth_astro
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") azimuth
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") incidence
+          th(scope="col" data-tablesaw-sortable-col data-tablesaw-priority="1") eot
+      tbody
+        each result in results.results
+          tr
+            each val in result
+              td #{val}
+  hr
+
+  h2 Definitions
+  p For more information, see <a href="https://www.nrel.gov/docs/fy08osti/34302.pdf">https://www.nrel.gov/docs/fy08osti/34302.pdf</a>
+
+  ul#defs
+    li <strong>delta_ut1</strong>: Fractional second difference between UTC and UT which is used to adjust UTC for earth's irregular rotation rate and is derived from observation only and is reported in this bulletin: http://maia.usno.navy.mil/ser7/ser7.dat (Note: delta_ut1 in this service is scraped from https://data.iers.org/eris/eopOfToday/eopoftoday.php and cached for 1 day.), where delta_ut1 = DUT1. Valid range: -1 to 1 second (exclusive). 
+    li <strong>delta_t</strong>: Difference between earth rotation time and terrestrial time. It is derived from observation only and is reported in this bulletin: http://maia.usno.navy.mil/ser7/ser7.dat , where delta_t = 32.184 + (TAI-UTC) - DUT1. (Note: This service uses the t-a-i npm module (https://www.npmjs.com/package/t-a-i) to calculate TAI milliseconds.) Valid range: -8000 to 8000 seconds.
+    li <strong>ssha</strong>: Sunset hour angle (degrees)
+    li <strong>sta</strong>: Sun transit altitude (degrees)
+    li <strong>srha</strong>: Sunrise hour angle (degrees)
+    li <strong>jd</strong>: Julian day
+    li <strong>jc</strong>: Julian century
+    li <strong>jde</strong>: Julian ephemeris day
+    li <strong>jce</strong>: Julian ephemeris century
+    li <strong>jme</strong>: Julian ephemeris millenium
+    li <strong>l</strong>: Earth heliocentric longitude (degrees)
+    li <strong>b</strong>: Earth heliocentric latitude (degrees)
+    li <strong>r</strong>: Earth radius vector (Astronomical Units, AU)c
+    li <strong>theta</strong>: Geocentric longitude (degrees)
+    li <strong>beta</strong>: Geocentric latitude (degrees)
+    li <strong>x0</strong>: Mean elongation (moon-sun) (degrees)
+    li <strong>x1</strong>: Mean anomaly (sun) (degrees)
+    li <strong>x2</strong>: Mean anomaly (moon) (degrees)
+    li <strong>x3</strong>: Argument latitude (moon) (degrees)
+    li <strong>x4</strong>: Ascending longitude (moon) (degrees)
+    li <strong>del_psi</strong>: Nutation longitude (degrees)
+    li <strong>del_epsilon</strong>: Nutation obliquity (degrees)
+    li <strong>epsilon0</strong>: Ecliptic mean obliquity (arc seconds)
+    li <strong>epsilon</strong>: Ecliptic true obliquity  (degrees)
+    li <strong>del_tau</strong>: Aberration correction (degrees)
+    li <strong>lamda</strong>: Apparent sun longitude (degrees)
+    li <strong>nu0</strong>: Greenwich mean sidereal time (degrees)
+    li <strong>nu</strong>: Greenwich sidereal time (degrees)
+    li <strong>alpha</strong>: Geocentric sun right ascension (degrees)
+    li <strong>delta</strong>: Geocentric sun declination (degrees)
+    li <strong>h</strong>: Observer hour angle (degrees)
+    li <strong>xi</strong>: Sun equatorial horizontal parallax (degrees)
+    li <strong>del_alpha</strong>: Sun right ascension parallax (degrees)
+    li <strong>delta_prime</strong>: Topocentric sun declination (degrees)
+    li <strong>alpha_prime</strong>: Topocentric sun right ascension (degrees)
+    li <strong>h_prime</strong>: Topocentric local hour angle (degrees)
+    li <strong>e0</strong>: Topocentric elevation angle (uncorrected) (degrees)
+    li <strong>del_e</strong>: Atmospheric refraction correction (degrees)
+    li <strong>e</strong>: Topocentric elevation angle (corrected) (degrees)
+    li <strong>zenith</strong>: Topocentric zenith angle (degrees)
+    li <strong>azimuth_astro</strong>: Topocentric azimuth angle (westward from south) (for astronomers)
+    li <strong>azimuth</strong>: Topocentric azimuth angle (eastward from north) (for navigators and solar radiation)
+    li <strong>incidence</strong>: Surface incidence angle (degrees)
+    li <strong>eot</strong>: Equation of time (minutes)
+
+  div#version Solar Position Algorithm Calculator Version: #{results.version}
+
+    br
+    | Running on #{results.hostname}
+    br
+    | Azure build #: #{results.azureBuildNumber}
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/tablesaw/3.1.2/tablesaw.min.js", integrity="sha512-ITRmpfbrvyJMfI1gck3tVWu64CibL+Kz4P0PBrd5SMV1HKQ5DMkDrx5+S4x460IPHM0a4lYQYJngUGmXGdXIuA==", crossorigin="anonymous")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/tablesaw/3.1.2/tablesaw-init.min.js" integrity="sha512-w/1hLca9Fyn6iwnkMxUU55d/OlcA65RnP4v6kJ8NssnzHeHnJBeOzuHEkJ67zpt0ksiH1LQn8FKYZc/TT1O/aQ==" crossorigin="anonymous")
